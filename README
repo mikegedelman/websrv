@@ -24,6 +24,9 @@ first followed by two CRLFs. The most important obviously is Content-Type.
  Requesting a directory will result in the output of "ls -lh" being sent
 to the client as Content-Type: text/plain.
 
+ This folder contains a .jpg, .gif, .cgi, .html, and a directory to test
+with.
+
 websrv-proc
  This is the classic model of a webserver that forks a process for each 
 incoming connection.
