@@ -1,0 +1,66 @@
+There are two (main) source files included in this folder: 
+ websrv-proc, and
+ websrv-thread
+
+General
+ Compile by doing make [websrv-proc|websrv-thread] (one of the two).
+ Run just by doing ./websrv-proc [portnum]. For now, higher ports are better;
+ I like to use 8888.
+ 
+ Currently supports GET requests only - a TODO is adding 501 Not
+Implemented response for the rest of requests.
+
+ Supports the following file types: any plaintext file, html, cgi, jpg, gif.
+These are hard-coded. In the future, there will be a configuration file that 
+binds a certain file ending to a Content-Type: header, just like in Apache, 
+so we can support any file ending. 
+
+ CGI files should start with the following line:
+ #!/usr/bin/my_interpreter
+ Otherwise, they will be interpreted by /bin/sh.
+ CGI files are expected to generate their own headers, by outputting them
+first followed by two CRLFs. The most important obviously is Content-Type.
+
+ Requesting a directory will result in the output of "ls -lh" being sent
+to the client as Content-Type: text/plain.
+
+websrv-proc
+ This is the classic model of a webserver that forks a process for each 
+incoming connection.
+
+websrv-thread
+ This version uses one of the threads available in a pool of worker threads
+to serve the request. Specifically, we're using the "sigaltstack" method
+for spawning and switching to threads in user-space as opposed to
+kernel-space. See http://www.cs.bu.edu/~richwest/cs410_spring_2014/assignments/a2/portable_threads.pdf 
+for more information.
+
+ As such, it leverages nonblocking read/write operations so that while one 
+thread is waiting for data to be recieved, we can switch to another and check 
+for more requests or work on buildling the response for another client. 
+This isn't fully implemented yet - as such, requesting regular files seems not
+to work currently. Requesting directories and .cgi files works as expected 
+right now.
+
+ Finally, please note that this code is definitely a work in progress and 
+is pretty broken. Specifically I'm working out the kinks with thread_suspend
+and asynchronous I/O.
+
+thread_pool.c
+ This is the interface we've exposed to the webserver. It leverages mctx.c,
+which is pretty much a direct copy of the implementation proposed in the
+paper I linked above. It uses the context-switching functions to create and
+destroy threads. However, it doesn't have any "join" functions or many 
+operations like in pthreads; instead, it's modeled more around having a 
+pool of worker threads that are created, and then wait for work to be done.
+ While somewhat limiting, this is useful for a webserver. Also, with the
+mctx approach, the most costly operation is thread creation, so it makes more
+sense to have them ready to fire instead of spawning a new one every time.
+
+mctx.c
+ Why would someone want to do threading in user-space? My answer is: I don't
+really know. It's a requirement of this assigment, and supposedly it's more
+portable than pthreads. But obviously this is unable to leverage multiple
+processor cores and so, in my opinion, is absolutely useless for any 
+modern-day webserver. With that being said, it's a somewhat interesting 
+approach.
