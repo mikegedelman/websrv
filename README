@@ -41,13 +41,6 @@ for more information.
  As such, it leverages nonblocking read/write operations so that while one 
 thread is waiting for data to be recieved, we can switch to another and check 
 for more requests or work on buildling the response for another client. 
-This isn't fully implemented yet - as such, requesting regular files seems not
-to work currently. Requesting directories and .cgi files works as expected 
-right now.
-
- Finally, please note that this code is definitely a work in progress and 
-is pretty broken. Specifically I'm working out the kinks with thread_suspend
-and asynchronous I/O.
 
 thread_pool.c
  This is the interface we've exposed to the webserver. It leverages mctx.c,

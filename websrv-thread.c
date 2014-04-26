@@ -513,7 +513,7 @@ void get_cgi_file(int,char*,struct request_options*);
 void get_dir(int,char*,struct request_options*);
 
 /* expects the "GET" part to already be chopped off of req
- * also req is notw null terminated, not CRLF terminated.
+ * also req is now null terminated, not CRLF terminated.
  */
 int get_request(int t, char *req) {
    char file[255];
