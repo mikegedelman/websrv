@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+   <title>CS 410 Webserver - Histogram</title>
+   <style type="text/css">
+      body {text-align:center; }
+      body > * { text-align:left; }
+      h1 { 
+         color: red;
+         text-align:center;
+      }
+
+      form {
+         display:inline-block;
+         margin-left:auto;
+         margin-right:auto;
+      }
+   </style>
+</head>
+<body>
+   <h1>My Histogram</h1>
+   <form name="histogram" action="cs410_histogram.cgi" method="get">
+      <label for="file">File:</label> <br>
+      <input type="text" name="file"> <br>
+      <label for="q">Search terms (separated by spaces):</label> <br>
+      <input type="text" name="q"> <br>
+      <input type="submit" value="Submit">
+   </form>
+</body>
